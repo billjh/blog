@@ -6,7 +6,7 @@ branches:
   - master
 before_install:
 - npm install -g hexo-cli
-before_scripts:
+before_script:
 - git config --global user.name "Huan Jiang"
 - git config --global user.email "bill.jiangh@gmail.com"
 - sed -i'' "s~git@github.com:billjh/blog.git~https://${GH_TOKEN}:x-oauth-basic@github.com/billjh/blog.git~" _config.yml
