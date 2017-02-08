@@ -1,0 +1,17 @@
+language: node_js
+node_js:
+  - "6"
+branches:
+  only:
+  - master
+before_install:
+- npm install -g hexo-cli
+before_scripts:
+- git config --global user.name "Huan Jiang"
+- git config --global user.email "bill.jiangh@gmail.com"
+- sed -i'' "s~git@github.com:sazzer/blog.git~https://${GH_TOKEN}:x-oauth-basic@github.com/sazzer/blog.git~" _config.yml
+install:
+- npm install
+- hexo generate
+after_success:
+- hexo deploy --silent
