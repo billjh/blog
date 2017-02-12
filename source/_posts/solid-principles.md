@@ -1,7 +1,8 @@
 ---
 title: SOLID
 date: 2017-2-9
-category: Programming
+tags:
+- OOP
 ---
 
 Principles to follow for better OOP programs.
