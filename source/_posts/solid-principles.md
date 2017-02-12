@@ -2,7 +2,9 @@
 title: SOLID Principles
 date: 2017-2-9
 tags:
+- programming
 - oop
+- design pattern
 ---
 
 A refresher of the five basic principles behind maintainable and extensible object-oriented programs.
