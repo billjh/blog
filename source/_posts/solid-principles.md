@@ -11,11 +11,13 @@ A refresher of the five basic principles behind maintainable and extensible obje
 
 <!-- more -->
 
+> Any fool can write code that a computer can understand. Good programmers write code that humans can understand. - _Martin Fowler_
+
 ### SOLID
 
 SOLID principles are something you must heard of when you take any programming classes that teach you objects and classes. They are abstract but highly valuable, because they are summarized from the best practices in the industry.
 
-Violation of these principles in your work is an indication of having code smells and may results in un-maintainability of your codebase. Now, let's roughly go through the SOLID principles one-by-one.
+Violation of these principles in your projects is an indication of having code smells, and may results in un-maintainability of your codebase. Now, let's roughly go through the SOLID principles one-by-one.
 
 ### Single Responsibility Principle
 A class should have a single responsibility (i.e. only one reason to change). If your classes have too many responsibility, consider to break them apart into different classes with clearer intentions.
