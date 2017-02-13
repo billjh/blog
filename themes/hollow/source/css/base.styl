@@ -39,10 +39,15 @@ a.nav-back
   position absolute
   top 15px
   left 15px
-  color white-faded
+  color gray
   z-index 99
   &:hover, &:focus
-    color red
+    color inherit
+    text-decoration none
+  span
+    font-family: 'Permanent Marker'
+    @media screen and (max-width: 768px)
+      display none
 
 nav
   position absolute
