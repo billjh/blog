@@ -54,7 +54,7 @@ func sortOpt(arr []int) {
 }
 {% endcodeblock %}
 
-With the help of go benchmark tool, we see a constant performance grow of around 2x after optimization.
+With the help of go benchmark tool, we see a constant performance growth of around 2x after optimization.
 
 {% codeblock mark:2-4 %}
 ► go test -bench=.
