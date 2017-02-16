@@ -15,12 +15,10 @@ A refresher of the five basic principles behind maintainable and extensible obje
 
 ### SOLID
 
-SOLID principles are something you must heard of when you take any programming classes that teach you objects and classes. They are abstract but highly valuable, because they are summarized from the best practices in the industry.
-
-Violation of these principles in your projects is an indication of having code smells, and may results in un-maintainability of your codebase. Now, let's roughly go through the SOLID principles one-by-one.
+SOLID is something you must heard of in any object-oriented programming class. It represents five principles of designing classes and objects. Its intention is to help to remove code smells in a system and to make it maintainable and extensible over time.
 
 ### Single Responsibility Principle
-A class should have a single responsibility (i.e. only one reason to change). If your classes have too many responsibility, consider to break them apart into different classes with clearer intentions.
+A class should have a single responsibility (i.e. only one reason to change). If a class have too many responsibility, consider to break them apart into different classes with clearer intentions.
 
 ### Open-closed Principle
 Software entities should be open for extension, but closed for modification. In other words, a class can allow its behavior to be extended without modification to its code, usually through _inheritance_.
