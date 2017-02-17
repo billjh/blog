@@ -24,9 +24,9 @@ There are two noteworthy advantages of insertion sort. First, insertion sort is 
 Below is my first implementation. It's concise since I can perform the swaps without temporary variable, thanks to golang's parallel assignment.
 
 {% codeblock lang:go insertion_sort.go https://github.com/billjh/algo/blob/master/sorting/insertion_sort.go source %}
-package insertion
+package sorting
 
-func sort(arr []int) {
+func InsertionSort(arr []int) {
 	for i := 1; i < len(arr); i++ {
 		for j := i; j > 0 && arr[j] < arr[j-1]; j-- {
 			arr[j], arr[j-1] = arr[j-1], arr[j]
@@ -40,9 +40,9 @@ func sort(arr []int) {
 The above implementation leaves rooms for performance tuning. In the outer loop, to move an item with _k_ swaps takes _2k_ operations. It can be cut down to half by shifting each item to its neighbor with only _k_ operations.
 
 {% codeblock mark:5-10 lang:go insertion_sort_optimized.go https://github.com/billjh/algo/blob/master/sorting/insertion_sort_optimized.go source %}
-package insertion
+package sorting
 
-func sortOpt(arr []int) {
+func OptimizedInsertionSort(arr []int) {
 	for i := 1; i < len(arr); i++ {
 		unsorted := arr[i]
 		j := i - 1

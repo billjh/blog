@@ -22,7 +22,7 @@ Below is an implementation of selection sort in golang.
 {% codeblock lang:go selection_sort.go https://github.com/billjh/algo/blob/master/sorting/selection_sort.go source%}
 package sorting
 
-func selectionSort(arr []int) {
+func SelectionSort(arr []int) {
 	for i := 0; i < len(arr)-1; i++ {
 		iMin := i
 		for j := i + 1; j < len(arr); j++ {

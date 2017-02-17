@@ -24,7 +24,7 @@ Below is an optimized implementation of bubble sort in golang. Each iteration in
 {% codeblock lang:go bubble_sort.go https://github.com/billjh/algo/blob/master/sorting/bubble_sort.go source %}
 package sorting
 
-func bubbleSort(arr []int) {
+func BubbleSort(arr []int) {
 	n := len(arr)
 	for n > 0 {
 		newn := 0
