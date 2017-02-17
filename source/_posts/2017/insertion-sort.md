@@ -7,7 +7,7 @@ tags:
 - golang
 ---
 
-A stable and adaptive quadratic sorting algorithm. [Best: O(n), Average: O(n<sup>2</sup>), Worst:O(n<sup>2</sup>), Space: O(1)]
+A stable and adaptive quadratic sorting algorithm. [Best: O(n), Average: O(n<sup>2</sup>), Worst: O(n<sup>2</sup>), Space: O(1)]
 
 <!-- more -->
 
