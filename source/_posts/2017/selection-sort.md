@@ -36,3 +36,7 @@ func selectionSort(arr []int) {
 	}
 }
 {% endcodeblock %}
+
+_References:_
+1. https://en.wikipedia.org/wiki/Selection_sort
+2. https://github.com/billjh/algo/tree/master/sorting
