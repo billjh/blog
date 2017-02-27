@@ -23,6 +23,8 @@ The root of a max heap is always the maximum. In the second phase, the array gra
 
 ### Implementation
 
+Below is an implementation of heap sort in golang.
+
 {% codeblock lang:go heap_sort.go https://github.com/billjh/algo/blob/master/sorting/heap_sort.go source %}
 package sorting
 
