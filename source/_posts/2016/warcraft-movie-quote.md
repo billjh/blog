@@ -7,7 +7,6 @@ tags:
 
 Always remember——from light comes darkness, and from darkness...Light!
 
-光明源于黑暗，黑暗涌现光明。
-——**《魔兽世界》电影**
+光明源于黑暗，黑暗涌现光明。 **《魔兽世界》**
 
 <!-- more -->
