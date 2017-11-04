@@ -17,9 +17,9 @@ From C# 6.0 onwards, use read-only (getter-only) auto property for conciseness a
 
 "Pure functions" and "immutability" are probably what you heard most from functional programming fans.
 
-So what I like most about functional programming is it allows you to better reason about your program, by seeing how data flow through, and without worrying about unwanted state transfers in your objects when calling some method. The functional paradigm is different from Object-Oriented paradigm, which tries to _encapsulate_ the "moving parts" in your system; it minimizes them.
+So what I like most about functional programming is it allows you to better reason about your program, by seeing how data flow through, and without worrying about unwanted state transfers in your objects when calling some method. The functional paradigm is different from Object-Oriented paradigm which tries to _encapsulate_ the "moving parts" in your system; it minimizes them.
 
-**Immutability** of your data objects is required to functional programming. It guarantees no side-effects created when passing them into pure functions; pure functions guarantee same return value for the same input value(s).
+**Immutability** of objects is required in functional programming. It guarantees no side-effects created when passing them into pure functions; pure functions guarantee same return value for the same input.
 
 # Examples
 
@@ -49,7 +49,7 @@ public class Customer
 }
 {% endcodeblock %}
 
-As a side note, [this](https://visualstudio.uservoice.com/forums/121579-visual-studio-ide/suggestions/16067509-codelens-reflect-references-count-on-public-field) could be a small reason that discourages using of fields: _Visual Studio CodeLens_ does not show references count on both public and private fields as it does on auto-properties.
+As a side note, [this](https://visualstudio.uservoice.com/forums/121579-visual-studio-ide/suggestions/16067509-codelens-reflect-references-count-on-public-field) currently could be a small reason that discourages using of fields: _Visual Studio CodeLens_ does **not** show references count on both public and private fields as it does on auto-properties.
 
 ![](codelens.png)
 
@@ -80,7 +80,7 @@ public class Customer
 {% endcodeblock %}
 
 ## Getter-only auto-properties (C# 6)
-New feature in C# 6 (released quite a while actually) allows declaring auto-property without a setter. In this way, the hidden underlying field initialized in the constructor will be read-only and can only be accessed through the getter.
+New feature in C# 6 (released quite a while actually) allows declaring auto-property without a setter. In this way, the underlying field will be read-only and can be initialized in the constructor.
 
 {% codeblock lang:csharp %}
 public class Customer
