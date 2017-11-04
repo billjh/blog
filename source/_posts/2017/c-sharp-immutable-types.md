@@ -5,7 +5,6 @@ tags:
 - c-sharp
 - functional
 - programming
-- immutability
 ---
 
 From C# 6.0 onwards, use read-only (getter-only) auto property for conciseness and readability for your immutable types.
