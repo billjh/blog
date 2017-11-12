@@ -23,7 +23,7 @@ When I get used to the default font in Visual Studio, it becomes very readable t
 
 I searched online and found this [blog](http://ikato.com/blog/how-to-install-consolas-font-on-mac-os-x.html). It shows a script that extracts the font files from a Microsoft's free product with [cabextract](https://www.cabextract.org.uk) tool.
 
-{% codeblock lang:bash http://ikato.com/blog/how-to-install-consolas-font-on-mac-os-x.html mark:9 %}
+{% codeblock lang:bash script http://ikato.com/blog/how-to-install-consolas-font-on-mac-os-x.html link mark:9 %}
 # brew is a part of Mac OS X package manager called Homebrew (http://brew.sh/).
 brew install cabextract
 cd ~/Downloads
