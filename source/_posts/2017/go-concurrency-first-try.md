@@ -5,13 +5,13 @@ tags:
 - golang
 ---
 
+I got this interesting interview question from my friend last week. 
+
 > Get three distinct messages from api.github.com/zen. Extra points for concurrency.
 
 <!-- more -->
 
-# Background
-
-I heard about this interesting interview question from my friend last week. 
+# Solution without Concurrency
 
 At first glance, I found it not hard to come up with a solution that calls the API repeatedly until we get three distinct responses. Just need to take care of error handling and duplication. So I tried with Golang:
 
@@ -62,7 +62,7 @@ Anything added dilutes everything else.
 
 <img class="no-box-shadow" src="zen.png" />
 
-My piece of code simply works. Next is to take it to the next level: making it concurrent. 
+My piece of code simply works. Then I wanted to bring it to the next level: making it concurrent. 
 
 <img class="no-box-shadow" src="gophercomplex1.jpg">
 
