@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="From C# 6.0 onwards, use read-only (getter-only) auto property for conciseness and readability for your immutable types.">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Jiang Huan">
+    
+
+    <!-- Title -->
+    
+    <title>C# Immutable Types | Jiang Huan</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/blog/css/style.css">
+
+    <!-- Custom Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Special+Elite|Permanent+Marker" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+
+<body>
+
+    <!-- Content -->
+    <section class="article-container">
+<!-- Back Home -->
+<a class="nav-back" href="/blog/">
+    <i class="fa fa-align-right"></i>
+</a>
+
+
+<!-- Page Header -->
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>C# Immutable Types</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Main Content -->
+            <div class="post-content col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <p>From C# 6.0 onwards, use read-only (getter-only) auto property for conciseness and readability for your immutable types.<br><img class="no-box-shadow" src="programming-paradigms.png"></p>
+<a id="more"></a>
+
+<h1 id="What-and-Why"><a href="#What-and-Why" class="headerlink" title="What and Why"></a>What and Why</h1><p>“Pure functions” and “immutability” are probably what you heard most from functional programming fans.</p>
+<p>So what I like most about functional programming is it allows you to better reason about your program, by seeing how data flow through, and without worrying about unwanted state transfers in your objects when calling some method. The functional paradigm is different from Object-Oriented paradigm which tries to <em>encapsulate</em> the “moving parts” in your system; it minimizes them.</p>
+<p><strong>Immutability</strong> of objects is required in functional programming. It guarantees no side-effects created when passing them into pure functions; pure functions guarantee same return value for the same input.</p>
+<h1 id="Examples"><a href="#Examples" class="headerlink" title="Examples"></a>Examples</h1><p>Moving on, I will demonstrate three ways in C# to create an immutable <em>Customer</em> class with attributes name, age, and email.</p>
+<h2 id="Public-read-only-fields"><a href="#Public-read-only-fields" class="headerlink" title="Public read-only fields"></a>Public read-only fields</h2><p>The first example defines the attributes using read-only field. The drawback of this way is that fields are exposed to outside the class, which is discouraged in this most-voted <a href="https://stackoverflow.com/a/295109" target="_blank" rel="noopener">answer</a> on StackOverflow.</p>
+<blockquote>
+<p>Fields should (almost always) be kept private to a class and accessed via get and set properties.</p>
+</blockquote>
+<p>Apart from this, it ensures immutability and is <a href="https://stackoverflow.com/a/7975677" target="_blank" rel="noopener">thread-safe</a>.</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Customer</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// use read-only field</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">readonly</span> <span class="keyword">string</span> Name;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">readonly</span> <span class="keyword">int</span> Age;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">readonly</span> <span class="keyword">string</span> Email;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Customer</span>(<span class="params"><span class="keyword">string</span> name, <span class="keyword">int</span> age, <span class="keyword">string</span> email</span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        Name = name;</span><br><span class="line">        Age = age;</span><br><span class="line">        Email = email;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>As a side note, <a href="https://visualstudio.uservoice.com/forums/121579-visual-studio-ide/suggestions/16067509-codelens-reflect-references-count-on-public-field" target="_blank" rel="noopener">this</a> currently could be a small reason that discourages using of fields: <em>Visual Studio CodeLens</em> does <strong>not</strong> show references count on both public and private fields as it does on auto-properties.</p>
+<p><img src="codelens.png" alt></p>
+<h2 id="Auto-properties-with-private-setter"><a href="#Auto-properties-with-private-setter" class="headerlink" title="Auto-properties with private setter"></a>Auto-properties with private setter</h2><p>The second example uses auto-property by making setter property private. It ensures external immutability where attributes cannot be changed from outside through setters. But it does allow changes from object itself (eg. <em>UpdateEmail</em> method).</p>
+<p>It does not enforce overall immutability for the type.</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Customer</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// use auto-property with private setter for external immutability</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> Name &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> Age &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> Email &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Customer</span>(<span class="params"><span class="keyword">string</span> name, <span class="keyword">int</span> age, <span class="keyword">string</span> email</span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        Name = name;</span><br><span class="line">        Age = age;</span><br><span class="line">        Email = email;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">UpdateEmail</span>(<span class="params"><span class="keyword">string</span> newEmail</span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        Email = newEmail;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Getter-only-auto-properties-C-6"><a href="#Getter-only-auto-properties-C-6" class="headerlink" title="Getter-only auto-properties (C# 6)"></a>Getter-only auto-properties (C# 6)</h2><p>New feature in C# 6 (released quite a while actually) allows declaring auto-property without a setter. In this way, the underlying field will be read-only and can be initialized in the constructor.</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Customer</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// use getter-only auto-property for internal immutability</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> Name &#123; <span class="keyword">get</span>; &#125;</span><br><span class="line">    <span class="comment">// private readonly string _name;</span></span><br><span class="line">    <span class="comment">// public string Name &#123;</span></span><br><span class="line">    <span class="comment">//     get</span></span><br><span class="line">    <span class="comment">//     &#123;</span></span><br><span class="line">    <span class="comment">//         return _name;</span></span><br><span class="line">    <span class="comment">//     &#125;</span></span><br><span class="line">    <span class="comment">// &#125;</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> Age &#123; <span class="keyword">get</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> Email &#123; <span class="keyword">get</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Customer</span>(<span class="params"><span class="keyword">string</span> name, <span class="keyword">int</span> age, <span class="keyword">string</span> email</span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        Name = name;</span><br><span class="line">        <span class="comment">// _name = name;</span></span><br><span class="line">        Age = age;</span><br><span class="line">        Email = email;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>If you are using C# 6 and above, it should be the preferred way for declaring immutable types, as it makes you write less code and gives the immutability you will need.</p>
+
+
+                <!-- Meta -->
+                <div class="post-meta">
+                    <hr>
+                    <br>
+                    <div class="post-tags">
+                        
+                            
+
+<a href="/blog/tags/c-sharp/">#c-sharp</a> <a href="/blog/tags/functional/">#functional</a> <a href="/blog/tags/programming/">#programming</a>
+
+
+                        
+                    </div>
+                    <div class="post-date">
+                        Friday, Nov 3 2017
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <!-- Disqus Comments -->
+
+<div id="disqus_thread" class="comment"></div>
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = 'billjiang';
+
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function() {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+            </div>
+        </div>
+    </div>
+</article>
+</section>
+
+
+    <!-- Scripts -->
+    <!-- jQuery -->
+<script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-92157640-1', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+</body>
+
+</html>

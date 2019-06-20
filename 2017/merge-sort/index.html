@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="An efficient and stable divide-and-conquer sorting algorithm. [Best: O(n), Average: O(nlgn), Worst: O(nlgn), Space: O(n)]">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Jiang Huan">
+    
+
+    <!-- Title -->
+    
+    <title>Merge Sort | Jiang Huan</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/blog/css/style.css">
+
+    <!-- Custom Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Special+Elite|Permanent+Marker" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+
+<body>
+
+    <!-- Content -->
+    <section class="article-container">
+<!-- Back Home -->
+<a class="nav-back" href="/blog/">
+    <i class="fa fa-align-right"></i>
+</a>
+
+
+<!-- Page Header -->
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Merge Sort</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Main Content -->
+            <div class="post-content col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <p>An efficient and stable divide-and-conquer sorting algorithm. [Best: O(n), Average: O(nlgn), Worst: O(nlgn), Space: O(n)]</p>
+<a id="more"></a>
+
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Merge-sort-example-300px.gif" alt></p>
+<h3 id="Idea"><a href="#Idea" class="headerlink" title="Idea"></a>Idea</h3><p>The idea of merge sort uses a classic divide-and-conquer approach. By recursively dividing the array into smaller sub-arrays, the sub-arrays will finally all become sorted (at most 1 item). Next, those sub-arrays are merged back together in a sorted manner until all becomes one. It is an efficient and stable sorting algorithm.</p>
+<h3 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a>Implementation</h3><p>Below is an implementation of merge sort in golang.</p>
+<figure class="highlight go"><figcaption><span>merge_sort.go</span><a href="https://github.com/billjh/algo/blob/master/sorting/merge_sort.go" target="_blank" rel="noopener">source</a></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> sorting</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">MergeSort</span><span class="params">(arr []<span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	<span class="built_in">copy</span>(arr, mergeSort(arr))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">mergeSort</span><span class="params">(arr []<span class="keyword">int</span>)</span> []<span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(arr) &lt;= <span class="number">1</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> arr</span><br><span class="line">	&#125;</span><br><span class="line">	middle := <span class="built_in">len</span>(arr) / <span class="number">2</span></span><br><span class="line">	left := mergeSort(arr[:middle])</span><br><span class="line">	right := mergeSort(arr[middle:])</span><br><span class="line">	<span class="keyword">return</span> merge(left, right)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">merge</span><span class="params">(left, right []<span class="keyword">int</span>)</span> []<span class="title">int</span></span> &#123;</span><br><span class="line">	r := <span class="built_in">make</span>([]<span class="keyword">int</span>, <span class="built_in">len</span>(left)+<span class="built_in">len</span>(right))</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; ; i++ &#123;</span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">len</span>(left) &gt; <span class="number">0</span> &amp;&amp; <span class="built_in">len</span>(right) &gt; <span class="number">0</span> &#123;</span><br><span class="line">			<span class="comment">// pick one smaller item when two arrays are both non-empty</span></span><br><span class="line">			<span class="keyword">if</span> left[<span class="number">0</span>] &gt; right[<span class="number">0</span>] &#123;</span><br><span class="line">				r[i] = right[<span class="number">0</span>]</span><br><span class="line">				right = right[<span class="number">1</span>:]</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				r[i] = left[<span class="number">0</span>]</span><br><span class="line">				left = left[<span class="number">1</span>:]</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> <span class="built_in">len</span>(left) &gt; <span class="number">0</span> &#123;</span><br><span class="line">			<span class="built_in">copy</span>(r[i:], left)</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> <span class="built_in">len</span>(right) &gt; <span class="number">0</span> &#123;</span><br><span class="line">			<span class="built_in">copy</span>(r[i:], right)</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> r</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><em>References:</em></p>
+<ol>
+<li><a href="https://en.wikipedia.org/wiki/Merge_sort" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Merge_sort</a></li>
+<li><a href="https://github.com/billjh/algo/tree/master/sorting" target="_blank" rel="noopener">https://github.com/billjh/algo/tree/master/sorting</a></li>
+</ol>
+
+
+                <!-- Meta -->
+                <div class="post-meta">
+                    <hr>
+                    <br>
+                    <div class="post-tags">
+                        
+                            
+
+<a href="/blog/tags/algorithms/">#algorithms</a> <a href="/blog/tags/sorting/">#sorting</a> <a href="/blog/tags/golang/">#golang</a>
+
+
+                        
+                    </div>
+                    <div class="post-date">
+                        Friday, Feb 17 2017
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <!-- Disqus Comments -->
+
+<div id="disqus_thread" class="comment"></div>
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = 'billjiang';
+
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function() {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+            </div>
+        </div>
+    </div>
+</article>
+</section>
+
+
+    <!-- Scripts -->
+    <!-- jQuery -->
+<script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-92157640-1', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="I got this interesting interview question from my friend last week. 
+
+Get three distinct messages from api.github.com/zen. Extra points for concurrency.">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Jiang Huan">
+    
+
+    <!-- Title -->
+    
+    <title>Go Concurrency First Try | Jiang Huan</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/blog/css/style.css">
+
+    <!-- Custom Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Special+Elite|Permanent+Marker" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+
+<body>
+
+    <!-- Content -->
+    <section class="article-container">
+<!-- Back Home -->
+<a class="nav-back" href="/blog/">
+    <i class="fa fa-align-right"></i>
+</a>
+
+
+<!-- Page Header -->
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Go Concurrency First Try</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Main Content -->
+            <div class="post-content col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <p>I got this interesting interview question from my friend last week. </p>
+<blockquote>
+<p>Get three distinct messages from api.github.com/zen. Extra points for concurrency.</p>
+</blockquote>
+<a id="more"></a>
+
+<h1 id="Solution-without-Concurrency"><a href="#Solution-without-Concurrency" class="headerlink" title="Solution without Concurrency"></a>Solution without Concurrency</h1><p>At first glance, I found it not hard to come up with a solution that calls the API repeatedly until we get three distinct responses. Just need to take care of error handling and duplication. So I tried with Golang:</p>
+<figure class="highlight go"><figcaption><span>zen.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"net/http"</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">"io/ioutil"</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">zen</span><span class="params">()</span> <span class="params">(<span class="keyword">string</span>, error)</span></span> &#123;</span><br><span class="line">	client := &amp;http.Client&#123;&#125;</span><br><span class="line">	res, err := client.Get(<span class="string">"https://api.github.com/zen"</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">""</span>, err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> res.Body.Close()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> res.StatusCode == http.StatusOK &#123;</span><br><span class="line">		body, _ := ioutil.ReadAll(res.Body)</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">string</span>(body), <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">""</span>, fmt.Errorf(<span class="string">"Status is not 200"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	words := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> <span class="built_in">len</span>(words) &lt; <span class="number">3</span> &#123;</span><br><span class="line">		word, err := zen()</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> _, ok := words[word]; ok &#123;</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		&#125;</span><br><span class="line">		words[word] = word</span><br><span class="line">		fmt.Println(word)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>On my terminal I ran <code>go run zen.go</code> and it printed three lines of words one-by-one like</p>
+<blockquote>
+<p>Approachable is better than simple.<br>Encourage flow.<br>Anything added dilutes everything else.</p>
+</blockquote>
+<img class="no-box-shadow" src="zen.png">
+
+<p>My piece of code simply works. Then I wanted to bring it to the next level: making it concurrent. </p>
+<img class="no-box-shadow" src="gophercomplex1.jpg">
+
+<h1 id="Concurrency-in-Go"><a href="#Concurrency-in-Go" class="headerlink" title="Concurrency in Go"></a>Concurrency in Go</h1><p>In order to write concurrent Go program, one needs to understand </p>
+<ul>
+<li>Communicating Sequential Processes (<a href="https://en.wikipedia.org/wiki/Communicating_sequential_processes" target="_blank" rel="noopener">wiki</a>) model which Go’s ideas about concurrency are <a href="https://golang.org/doc/faq#csp" target="_blank" rel="noopener">based on</a>, </li>
+<li>concurrency primitives <strong>goroutine</strong> and <strong>channel</strong>, and</li>
+<li>the concept of <a href="https://blog.golang.org/share-memory-by-communicating" target="_blank" rel="noopener">share memory by communicating</a> instead of communicate by sharing memory.</li>
+</ul>
+<h2 id="Goroutine"><a href="#Goroutine" class="headerlink" title="Goroutine"></a>Goroutine</h2><p>A <a href="https://golang.org/doc/effective_go.html#goroutines" target="_blank" rel="noopener">goroutine</a> is like a lightweight thread with only <a href="https://golang.org/doc/go1.4#runtime" target="_blank" rel="noopener">2 KB</a> overhead. It is practical to create hundreds of thousands of goroutines (<a href="https://golang.org/doc/faq#goroutines" target="_blank" rel="noopener">quote</a>). Upon creating goroutines in your program, Go runtime will take care of scheduling and multiplexing onto system threads. </p>
+<h2 id="Channel"><a href="#Channel" class="headerlink" title="Channel"></a>Channel</h2><p><a href="https://golang.org/doc/effective_go.html#channels" target="_blank" rel="noopener">Channels</a> connect goroutines like pipes. Or message queues. Each channel can have multiple senders and receivers.</p>
+<p>Channels can be buffered. Unbuffered channel will block senders until a receiver has received the value. Buffered channel can store messages up to the buffer size specified.</p>
+<h1 id="Solution-with-Concurrency"><a href="#Solution-with-Concurrency" class="headerlink" title="Solution with Concurrency"></a>Solution with Concurrency</h1><p>With those in mind, I came up with this solution using goroutines as <a href="https://gobyexample.com/worker-pools" target="_blank" rel="noopener">workers pool</a> and channels as queues to store jobs and immediate results. </p>
+<figure class="highlight go"><figcaption><span>zen_concurrent.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"io/ioutil"</span></span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line">	<span class="string">"sync"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">worker</span><span class="params">(in &lt;-<span class="keyword">chan</span> <span class="keyword">bool</span>, out <span class="keyword">chan</span>&lt;- <span class="keyword">string</span>, putback <span class="keyword">chan</span>&lt;- <span class="keyword">bool</span>)</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> job := <span class="keyword">range</span> in &#123;</span><br><span class="line">		client := &amp;http.Client&#123;&#125;</span><br><span class="line">		res, err := client.Get(<span class="string">"https://api.github.com/zen"</span>)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			putback &lt;- job</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> res.StatusCode == http.StatusOK &#123;</span><br><span class="line">			body, _ := ioutil.ReadAll(res.Body)</span><br><span class="line">			out &lt;- <span class="keyword">string</span>(body)</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			putback &lt;- job</span><br><span class="line">		&#125;</span><br><span class="line">		res.Body.Close()</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	count := <span class="number">3</span></span><br><span class="line"></span><br><span class="line">	wg := sync.WaitGroup&#123;&#125;</span><br><span class="line">	jobs := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">bool</span>, count)</span><br><span class="line">	resp := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">string</span>)</span><br><span class="line">	messages := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; count; i++ &#123;</span><br><span class="line">		jobs &lt;- <span class="literal">true</span></span><br><span class="line">		wg.Add(<span class="number">1</span>)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; count; i++ &#123;</span><br><span class="line">		<span class="keyword">go</span> worker(jobs, resp, jobs)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">for</span> res := <span class="keyword">range</span> resp &#123;</span><br><span class="line">			<span class="keyword">if</span> _, ok := messages[res]; ok &#123;</span><br><span class="line">				jobs &lt;- <span class="literal">true</span></span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				fmt.Println(res)</span><br><span class="line">				messages[res] = res</span><br><span class="line">				wg.Done()</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	wg.Wait()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>I created two channels, buffered <code>jobs</code> and unbuffered <code>resp</code>.</p>
+<p>A <code>worker</code> is goroutine that both receive and send jobs (when anything failed) to the <code>jobs</code> channel, and send response to <code>resp</code> channel. I created three workers for parallelism in this case.</p>
+<p>Another goroutine I created checks for duplication of responses and print distinct messages to console. On duplication, it will send a new job to <code>jobs</code> and later workers will try get a different response. </p>
+<p>I also used <code>sync.WaitGroup</code> to make <code>main</code> goroutine wait until all jobs are done.</p>
+<p>On my terminal I ran <code>go run zen_concurrent.go</code> and three lines appeared almost at the same time:</p>
+<blockquote>
+<p>Speak like a human.<br>It’s not fully shipped until it’s fast.<br>Practicality beats purity.</p>
+</blockquote>
+<img class="no-box-shadow" src="zen_concurrent.png">
+
+<p>I didn’t measure but total running time was reduced to around one third, thanks to parallel workers. </p>
+<p>My first try with Go concurrency was successful and fun.</p>
+
+
+                <!-- Meta -->
+                <div class="post-meta">
+                    <hr>
+                    <br>
+                    <div class="post-tags">
+                        
+                            
+
+<a href="/blog/tags/golang/">#golang</a>
+
+
+                        
+                    </div>
+                    <div class="post-date">
+                        Saturday, Nov 11 2017
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <!-- Disqus Comments -->
+
+<div id="disqus_thread" class="comment"></div>
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = 'billjiang';
+
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function() {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+            </div>
+        </div>
+    </div>
+</article>
+</section>
+
+
+    <!-- Scripts -->
+    <!-- jQuery -->
+<script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-92157640-1', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+</body>
+
+</html>
